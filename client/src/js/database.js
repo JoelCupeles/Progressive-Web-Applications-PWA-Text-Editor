@@ -13,19 +13,18 @@ const initdb = async () =>
   });
 
   export const putDb = async (content) => {
-    const db = await openDB('jate', 1);
+    const db = await initdb();
     const tx = db.transaction('jate', 'readwrite');
-    const store = tx.objectStore('jate');
-    await store.put({ content: content });
-    return tx.done;
+    await tx.objectStore('jate').add({ content: content });
+    console.log('Data added to the jate database');
   };
   
   export const getDb = async () => {
-    const db = await openDB('jate', 1);
+    const db = await initdb();
     const tx = db.transaction('jate', 'readonly');
-    const store = tx.objectStore('jate');
-    const data = await store.getAll();
-    return data;
+    const data = await tx.objectStore('jate').getAll();
+    console.log('Data fetched from the jate database');
+    return data.length > 0 ? data[data.length - 1].content : '';
   };
   
   initdb();
